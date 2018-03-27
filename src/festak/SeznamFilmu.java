@@ -6,15 +6,22 @@
 package festak;
 
 import static festak.Dataconnect.conn;
+import static festak.Dataconnect.stmt;
+import java.sql.*;
 import static java.lang.ProcessBuilder.Redirect.from;
-import java.sql.ResultSet;
+import javax.swing.JOptionPane;
+
 
 /**
  *
  * @author Student
  */
 public class SeznamFilmu extends javax.swing.JFrame {
-
+    
+    private String name = null;
+    private String year = null;
+    private String director_name = null;
+    private String director_surname = null;
     /**
      * Creates new form SeznamFilmu
      */
@@ -36,6 +43,11 @@ public class SeznamFilmu extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(600, 600));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -71,17 +83,21 @@ public class SeznamFilmu extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        showTableData();
+    }//GEN-LAST:event_formWindowOpened
+
     public void showTableData() {
         try {
-            stm = conn.prepareStatement("select * from emp where UNAME='" + from + "'");
-            ResultSet rs = pst.executeQuery();
+            stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from film");
             int i = 0;
             if (rs.next()) {
-                uname = rs.getString("uname");
-                email = rs.getString("umail");
-                pass = rs.getString("upass");
-                cou = rs.getString("ucountry");
-                model.addRow(new Object[]{uname, email, pass, cou});
+                name = rs.getString("name");
+                year = rs.getString("year");
+                director_name = rs.getString("director_name");
+                director_surname = rs.getString("director_surname");
+                jTable1.addRow(new Object[]{name, year, director_name, director_surname});
                 i++;
             }
             if (i < 1) {
